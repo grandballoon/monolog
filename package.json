@@ -1,0 +1,648 @@
+{
+  "name": "monolog",
+  "displayName": "Monolog",
+  "description": "Write down what you assume about the code you are reading, and have each assumption checked, without touching the file.",
+  "version": "0.1.0",
+  "publisher": "lukeconley",
+  "icon": "media/icon.png",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "monolog.addAssumption",
+        "title": "Add Assumption About Code",
+        "category": "Monolog",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "monolog.submitAssumption",
+        "title": "Record Assumption",
+        "category": "Monolog"
+      },
+      {
+        "command": "monolog.addScratchNote",
+        "title": "Add Note About Code",
+        "category": "Monolog",
+        "icon": "$(note)"
+      },
+      {
+        "command": "monolog.submitScratchNote",
+        "title": "Save Note",
+        "category": "Monolog"
+      },
+      {
+        "command": "monolog.addFileNote",
+        "title": "Add Note About File",
+        "category": "Monolog",
+        "icon": "$(file-text)"
+      },
+      {
+        "command": "monolog.cancelNewAssumption",
+        "title": "Cancel",
+        "category": "Monolog"
+      },
+      {
+        "command": "monolog.editClaim",
+        "title": "Edit Assumption",
+        "category": "Monolog",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "monolog.saveClaim",
+        "title": "Save and Check",
+        "category": "Monolog"
+      },
+      {
+        "command": "monolog.cancelEdit",
+        "title": "Cancel",
+        "category": "Monolog"
+      },
+      {
+        "command": "monolog.setNoteTitle",
+        "title": "Set Title",
+        "category": "Monolog",
+        "icon": "$(text-size)"
+      },
+      {
+        "command": "monolog.recheck",
+        "title": "Check Again",
+        "category": "Monolog",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "monolog.resolve",
+        "title": "Mark Resolved",
+        "category": "Monolog",
+        "icon": "$(check)"
+      },
+      {
+        "command": "monolog.reopen",
+        "title": "Reopen",
+        "category": "Monolog",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "monolog.delete",
+        "title": "Delete Assumption",
+        "category": "Monolog",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "monolog.setTagColor",
+        "title": "Set Tag Colour…",
+        "category": "Monolog",
+        "icon": "$(symbol-color)"
+      },
+      {
+        "command": "monolog.showTagColors",
+        "title": "Show Tag Colours",
+        "category": "Monolog",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "monolog.hideTagColors",
+        "title": "Hide Tag Colours",
+        "category": "Monolog",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "monolog.setApiKey",
+        "title": "Set Anthropic API Key",
+        "category": "Monolog"
+      },
+      {
+        "command": "monolog.clearApiKey",
+        "title": "Remove Anthropic API Key",
+        "category": "Monolog"
+      },
+      {
+        "command": "monolog.pruneDeleted",
+        "title": "Prune Assumptions for Deleted Files",
+        "category": "Monolog"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "monolog.addAssumption",
+          "when": "resourceScheme == file",
+          "group": "monolog@1"
+        },
+        {
+          "command": "monolog.addScratchNote",
+          "when": "resourceScheme == file",
+          "group": "monolog@2"
+        },
+        {
+          "command": "monolog.addFileNote",
+          "when": "resourceScheme == file",
+          "group": "monolog@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "monolog.addAssumption",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "monolog.addScratchNote",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "monolog.addFileNote",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "monolog.showTagColors",
+          "when": "!monolog.tagColors"
+        },
+        {
+          "command": "monolog.hideTagColors",
+          "when": "monolog.tagColors"
+        },
+        {
+          "command": "monolog.submitAssumption",
+          "when": "false"
+        },
+        {
+          "command": "monolog.submitScratchNote",
+          "when": "false"
+        },
+        {
+          "command": "monolog.cancelNewAssumption",
+          "when": "false"
+        },
+        {
+          "command": "monolog.editClaim",
+          "when": "false"
+        },
+        {
+          "command": "monolog.saveClaim",
+          "when": "false"
+        },
+        {
+          "command": "monolog.cancelEdit",
+          "when": "false"
+        },
+        {
+          "command": "monolog.setNoteTitle",
+          "when": "false"
+        },
+        {
+          "command": "monolog.recheck",
+          "when": "false"
+        },
+        {
+          "command": "monolog.resolve",
+          "when": "false"
+        },
+        {
+          "command": "monolog.reopen",
+          "when": "false"
+        },
+        {
+          "command": "monolog.delete",
+          "when": "false"
+        }
+      ],
+      "comments/commentThread/context": [
+        {
+          "command": "monolog.submitAssumption",
+          "group": "inline@1",
+          "when": "commentController == monolog && commentThread != draft-scratch && commentThread != draft-file"
+        },
+        {
+          "command": "monolog.submitScratchNote",
+          "group": "inline@2",
+          "when": "commentController == monolog && commentThread != draft-assumption"
+        },
+        {
+          "command": "monolog.cancelNewAssumption",
+          "group": "inline@3",
+          "when": "commentController == monolog"
+        }
+      ],
+      "comments/commentThread/title": [
+        {
+          "command": "monolog.setNoteTitle",
+          "group": "navigation@1",
+          "when": "commentController == monolog && commentThread =~ /^scratch/"
+        },
+        {
+          "command": "monolog.recheck",
+          "group": "navigation@1",
+          "when": "commentController == monolog && commentThread =~ /^assumption/"
+        },
+        {
+          "command": "monolog.resolve",
+          "group": "navigation@2",
+          "when": "commentController == monolog && commentThread =~ /^(assumption|scratch)$/"
+        },
+        {
+          "command": "monolog.reopen",
+          "group": "navigation@2",
+          "when": "commentController == monolog && commentThread =~ /^(assumption|scratch)-resolved$/"
+        },
+        {
+          "command": "monolog.delete",
+          "group": "navigation@3",
+          "when": "commentController == monolog && commentThread =~ /^(assumption|scratch)/"
+        }
+      ],
+      "comments/comment/title": [
+        {
+          "command": "monolog.editClaim",
+          "group": "inline@1",
+          "when": "commentController == monolog && comment == claim"
+        }
+      ],
+      "comments/comment/context": [
+        {
+          "command": "monolog.saveClaim",
+          "group": "inline@1",
+          "when": "commentController == monolog && comment == claim"
+        },
+        {
+          "command": "monolog.cancelEdit",
+          "group": "inline@2",
+          "when": "commentController == monolog && comment == claim"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "monolog.hideTagColors",
+          "group": "navigation@90",
+          "when": "resourceScheme == file && monolog.fileHasTagColors && monolog.tagColors"
+        },
+        {
+          "command": "monolog.showTagColors",
+          "group": "navigation@90",
+          "when": "resourceScheme == file && monolog.fileHasTagColors && !monolog.tagColors"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "monolog.addFileNote",
+          "group": "monolog@1",
+          "when": "resourceScheme == file && !explorerResourceIsFolder"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Monolog",
+      "properties": {
+        "monolog.model": {
+          "type": "string",
+          "default": "claude-sonnet-5",
+          "enum": [
+            "claude-sonnet-5",
+            "claude-opus-5",
+            "claude-haiku-4-5"
+          ],
+          "enumDescriptions": [
+            "Sonnet 5 — fast and capable (default).",
+            "Opus 5 — the most careful reader; slower and costlier.",
+            "Haiku 4.5 — cheapest; most likely to be confidently wrong."
+          ],
+          "markdownDescription": "The model that checks assumptions. Before reaching for a smaller model, try lowering `#monolog.effort#`: it keeps the model that is good at this and spends less thinking on it."
+        },
+        "monolog.effort": {
+          "type": "string",
+          "default": "default",
+          "enum": [
+            "default",
+            "max",
+            "xhigh",
+            "high",
+            "medium",
+            "low"
+          ],
+          "enumDescriptions": [
+            "Send no effort, which is the API's own default (high).",
+            "The most thorough reading, at the highest cost.",
+            "More thorough than the default.",
+            "The API's default level, stated explicitly.",
+            "Cheaper; a little less careful.",
+            "Cheapest; least careful."
+          ],
+          "description": "How much thinking each check may spend. Ignored for Haiku 4.5, which does not take an effort level."
+        },
+        "monolog.demoMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Record assumptions without sending them to Claude. They are saved and shown, but not checked."
+        },
+        "monolog.inlineSummary": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show each assumption's verdict and a short excerpt at the end of the last line it covers."
+        }
+      }
+    },
+    "colors": [
+      {
+        "id": "monolog.pendingBackground",
+        "description": "Background of a span whose assumption has no verdict yet.",
+        "defaults": {
+          "light": "#7d766626",
+          "dark": "#6b748133",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.pendingBorder",
+        "description": "Underline of a span whose assumption has no verdict yet.",
+        "defaults": {
+          "light": "#7d7666",
+          "dark": "#6b7481",
+          "highContrast": "#ffffff"
+        }
+      },
+      {
+        "id": "monolog.wrongBackground",
+        "description": "Background of a span whose assumption is wrong.",
+        "defaults": {
+          "light": "#b35a3029",
+          "dark": "#cd744833",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.wrongBorder",
+        "description": "Underline of a span whose assumption is wrong.",
+        "defaults": {
+          "light": "#b35a30",
+          "dark": "#cd7448",
+          "highContrast": "#cd7448"
+        }
+      },
+      {
+        "id": "monolog.impreciseBackground",
+        "description": "Background of a span whose assumption is imprecise.",
+        "defaults": {
+          "light": "#c69a4533",
+          "dark": "#c69a4533",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.impreciseBorder",
+        "description": "Underline of a span whose assumption is imprecise.",
+        "defaults": {
+          "light": "#c69a45",
+          "dark": "#c69a45",
+          "highContrast": "#c69a45"
+        }
+      },
+      {
+        "id": "monolog.missingBackground",
+        "description": "Background of a span whose assumption leaves out something that matters.",
+        "defaults": {
+          "light": "#4f74a826",
+          "dark": "#6f9ac833",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.missingBorder",
+        "description": "Underline of a span whose assumption leaves out something that matters.",
+        "defaults": {
+          "light": "#4f74a8",
+          "dark": "#6f9ac8",
+          "highContrast": "#6f9ac8"
+        }
+      },
+      {
+        "id": "monolog.solidBackground",
+        "description": "Background of a span whose assumption holds.",
+        "defaults": {
+          "light": "#467d4f26",
+          "dark": "#5f9e6b33",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.solidBorder",
+        "description": "Underline of a span whose assumption holds.",
+        "defaults": {
+          "light": "#467d4f",
+          "dark": "#5f9e6b",
+          "highContrast": "#5f9e6b"
+        }
+      },
+      {
+        "id": "monolog.unverifiableBackground",
+        "description": "Background of a span whose assumption cannot be settled from this file.",
+        "defaults": {
+          "light": "#7a5c9e24",
+          "dark": "#a58bc633",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.unverifiableBorder",
+        "description": "Underline of a span whose assumption cannot be settled from this file.",
+        "defaults": {
+          "light": "#7a5c9e",
+          "dark": "#a58bc6",
+          "highContrast": "#a58bc6"
+        }
+      },
+      {
+        "id": "monolog.scratchBackground",
+        "description": "Background of a span with a scratch note.",
+        "defaults": {
+          "light": "#2f7f7a1f",
+          "dark": "#4fb0a82b",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.scratchBorder",
+        "description": "Underline of a span with a scratch note.",
+        "defaults": {
+          "light": "#2f7f7a",
+          "dark": "#4fb0a8",
+          "highContrast": "#4fb0a8"
+        }
+      },
+      {
+        "id": "monolog.tagRedBackground",
+        "description": "Background of a note's code when its tag is red.",
+        "defaults": {
+          "light": "#e5140022",
+          "dark": "#f14c4c33",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagRedBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is red. Defaults to VS Code's charts.red.",
+        "defaults": {
+          "light": "charts.red",
+          "dark": "charts.red",
+          "highContrast": "charts.red"
+        }
+      },
+      {
+        "id": "monolog.tagOrangeBackground",
+        "description": "Background of a note's code when its tag is orange.",
+        "defaults": {
+          "light": "#d1861626",
+          "dark": "#d1861633",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagOrangeBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is orange. Defaults to VS Code's charts.orange.",
+        "defaults": {
+          "light": "charts.orange",
+          "dark": "charts.orange",
+          "highContrast": "charts.orange"
+        }
+      },
+      {
+        "id": "monolog.tagYellowBackground",
+        "description": "Background of a note's code when its tag is yellow.",
+        "defaults": {
+          "light": "#bf880326",
+          "dark": "#cca70033",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagYellowBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is yellow. Defaults to VS Code's charts.yellow.",
+        "defaults": {
+          "light": "charts.yellow",
+          "dark": "charts.yellow",
+          "highContrast": "charts.yellow"
+        }
+      },
+      {
+        "id": "monolog.tagGreenBackground",
+        "description": "Background of a note's code when its tag is green.",
+        "defaults": {
+          "light": "#388a3426",
+          "dark": "#89d18533",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagGreenBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is green. Defaults to VS Code's charts.green.",
+        "defaults": {
+          "light": "charts.green",
+          "dark": "charts.green",
+          "highContrast": "charts.green"
+        }
+      },
+      {
+        "id": "monolog.tagBlueBackground",
+        "description": "Background of a note's code when its tag is blue.",
+        "defaults": {
+          "light": "#1a85ff22",
+          "dark": "#3794ff33",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagBlueBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is blue. Defaults to VS Code's charts.blue.",
+        "defaults": {
+          "light": "charts.blue",
+          "dark": "charts.blue",
+          "highContrast": "charts.blue"
+        }
+      },
+      {
+        "id": "monolog.tagPurpleBackground",
+        "description": "Background of a note's code when its tag is purple.",
+        "defaults": {
+          "light": "#652d9022",
+          "dark": "#b180d733",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagPurpleBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is purple. Defaults to VS Code's charts.purple.",
+        "defaults": {
+          "light": "charts.purple",
+          "dark": "charts.purple",
+          "highContrast": "charts.purple"
+        }
+      },
+      {
+        "id": "monolog.tagCyanBackground",
+        "description": "Background of a note's code when its tag is cyan.",
+        "defaults": {
+          "light": "#0598bc26",
+          "dark": "#11a8cd33",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagCyanBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is cyan. Defaults to VS Code's terminal.ansiCyan.",
+        "defaults": {
+          "light": "terminal.ansiCyan",
+          "dark": "terminal.ansiCyan",
+          "highContrast": "terminal.ansiCyan"
+        }
+      },
+      {
+        "id": "monolog.tagMagentaBackground",
+        "description": "Background of a note's code when its tag is magenta.",
+        "defaults": {
+          "light": "#bc05bc22",
+          "dark": "#bc3fbc33",
+          "highContrast": null
+        }
+      },
+      {
+        "id": "monolog.tagMagentaBorder",
+        "description": "Underline of a note's code, and its tag's colour elsewhere, when the tag is magenta. Defaults to VS Code's terminal.ansiMagenta.",
+        "defaults": {
+          "light": "terminal.ansiMagenta",
+          "dark": "terminal.ansiMagenta",
+          "highContrast": "terminal.ansiMagenta"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.config.mjs production",
+    "dev": "node esbuild.config.mjs",
+    "check": "tsc --noEmit",
+    "test": "rm -rf build-test && node esbuild.config.mjs test && node --test \"build-test/**/*.test.mjs\"",
+    "test:e2e": "node esbuild.config.mjs production && node esbuild.config.mjs e2e && vscode-test",
+    "package": "node esbuild.config.mjs production && vsce package --no-dependencies --allow-missing-repository --skip-license --out monolog.vsix"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "~1.100.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "mocha": "^11.0.0",
+    "typescript": "^5.6.0"
+  }
+}

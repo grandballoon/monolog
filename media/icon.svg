@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect width="256" height="256" rx="56" fill="#1f2329"/>
+  <!-- Lines of code, one of them highlighted: the span an assumption is about. -->
+  <rect x="44" y="60" width="96" height="14" rx="7" fill="#4a525e"/>
+  <rect x="44" y="92" width="100" height="14" rx="7" fill="#4a525e"/>
+  <rect x="36" y="118" width="156" height="30" rx="8" fill="#5f9e6b" fill-opacity="0.28"/>
+  <rect x="44" y="126" width="140" height="14" rx="7" fill="#9fd1a9"/>
+  <rect x="36" y="150" width="156" height="3" rx="1.5" fill="#5f9e6b"/>
+  <rect x="44" y="176" width="88" height="14" rx="7" fill="#4a525e"/>
+  <!-- The note written over it, off to one side, covering nothing. -->
+  <path d="M170 44h46a12 12 0 0 1 12 12v30a12 12 0 0 1-12 12h-24l-14 14v-14h-8a12 12 0 0 1-12-12V56a12 12 0 0 1 12-12z" fill="#e8eaed"/>
+  <path d="M180 71l9 9 17-18" stroke="#4f9160" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
